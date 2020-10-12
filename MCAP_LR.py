@@ -4,7 +4,7 @@ import math
 
 # Prediction function for learning and evaluation
 # Instance represents a single instance of the dataset which includes email body text and a classification (0,1)
-#! parameters[0] should always be w0 
+#! parameters[0] should always be w0
 def make_prediction(instance, parameters):
     # Define a prediction variable and add w0 to it
     prediction = parameters[0]
