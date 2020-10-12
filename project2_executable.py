@@ -32,6 +32,11 @@ def load_all(path):
     # Combine the frames
     combined_df = ham_frame.append(spam_frame).drop_duplicates().reset_index(drop=True)
 
+    # Shuffle the dataframe in-place and reset the index
+    # This may not be required but seems like it would be better to randomize the order of the training data
+    # Compared to having all hams followed by all spams sequentially.
+    combined_df = combined_df.sample(frac=1).reset_index(drop=True)
+
     #return the combined frame
     return combined_df
 
