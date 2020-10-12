@@ -70,13 +70,13 @@ def text_preprocess(text):
     # convert to lowercase
     text = text.lower()
 
-    # remove leading whitespace
-    text = re.sub(r"^\s+" , "" , text)
+    # remove leading whitespace and space characters
+    text = text.strip(' ')
 
     # return the preprocessed text
     return text
 
 # Testing Functions
 test_df = load_all(d1_train)
-# print(test_df[0][0])
+print(test_df[0][404])
 print(test_df)
