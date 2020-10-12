@@ -45,7 +45,7 @@ def load_data(path, identifier):
     # Then create an object representing each email with (contents, identifier) and add it to the array
     # Lastly convert the array into a dataframe using from_dict and return it
     for x in glob.glob(os.path.join(path+identifier, '*')):
-        file_contents = open(x, 'r', errors='ignore').read().replace('\n', '')
+        file_contents = open(x, 'r', errors='ignore').read().replace('\n', ' ')
         file_contents = text_preprocess(file_contents)
         data_item = [file_contents, identifier]
         df[i] = data_item
@@ -78,4 +78,5 @@ def text_preprocess(text):
 
 # Testing Functions
 test_df = load_all(d1_train)
+# print(test_df[0][0])
 print(test_df)
