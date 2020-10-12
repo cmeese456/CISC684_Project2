@@ -1,7 +1,18 @@
 import sys
 import pandas as pd
+import math
+
+# Prediction function for learning and evaluation
+# Instance represents a single instance of the dataset which includes email body text and a classification (0,1)
+def make_prediction(instance, parameters):
+    return ""
 
 # Divide the training set into two sets using a 70/30 split.
+def splt_data(dataframe):
+    # Split the data into two new frames, one 70% one 30%
+
+    # Return both frames in a list
+    return ""
 
 # Learn parameters using the 70% split
 
