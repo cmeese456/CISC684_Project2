@@ -99,13 +99,6 @@ def text_preprocess(text):
 
 # Divide the training set into two sets using a 70/30 split.
 
-
-def splt_data(dataframe):
-    # Split the data into two new frames, one 70% one 30%
-
-    # Return both frames in a list
-    return ""
-
 # Input: a preprocessed (split) training, testing, validation and full training df.
 # Returns: processed matrix for each df + a CountVectorizer
 # Rows represent emails
