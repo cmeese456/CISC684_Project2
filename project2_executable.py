@@ -21,6 +21,10 @@ d2_test = "dataset_2/test/"
 d3_train = "dataset_3/train/"
 d3_test = "dataset_3/test/"
 
+# Read in the list of stop words
+stop_file = open("stopwords.txt")
+stop_list = stop_file.read().splitlines()
+
 # Takes a path to a dataset root folder (so ../dataset/test)
 # And builds a pandas dataframe from the data in ham and spam subfolders
 # Returns a single dataframe representing all of the training or testing data for a single dataset
@@ -108,7 +112,9 @@ def splt_data(dataframe):
 # Columns represent words (which are condensed to be numeric) and cells represent frequency counts
 def build_features(train_df, test_df, validation_df, full_training_frame):
     # Create the vectorizer for the dataset
-    cv = CountVectorizer(binary=False, max_df=0.95)
+    # max_df=0.95 removes "Subject" from the vocabulary since it appears in >95% of emails
+    # stop_list is a list of stop words I found online to improve our accuracy
+    cv = CountVectorizer(binary=False, max_df=0.95, stop_words=stop_list)
     # Build the dictionary from the full training data
     cv.fit_transform(full_training_frame[0].values)
     # Vectorize each df
@@ -119,6 +125,9 @@ def build_features(train_df, test_df, validation_df, full_training_frame):
     # Return the four dfs and cv
     return training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix
 
+# Preprocess the stop list so it is consistent with our input
+for x in stop_list:
+    x = text_preprocess(x)
 
 # Load all of the data files
 d1_train_full = load_all(d1_train)
@@ -161,6 +170,8 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 
 
 #! Testing Functions
+# print(stop_list)
+# print(d1_cv.stop_words)
 # print(d1_train_matrix_70.shape), print(d1_train_70_labels.size)
 # print(d2_train_matrix_70.shape), print(d2_train_70_labels.size)
 # print(d3_train_matrix_70.shape), print(d3_train_70_labels.size)
