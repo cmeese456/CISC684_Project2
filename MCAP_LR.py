@@ -20,13 +20,6 @@ def make_prediction(instance, parameters):
     # Return the prediction value for classification
     return prediction
 
-# Divide the training set into two sets using a 70/30 split.
-def splt_data(dataframe):
-    # Split the data into two new frames, one 70% one 30%
-
-    # Return both frames in a list
-    return ""
-
 # Learn parameters using the 70% split
 
 # Use the 30% of data as a validation set to select lambda
