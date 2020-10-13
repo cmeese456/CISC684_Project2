@@ -120,15 +120,58 @@ def build_features(train_df, test_df, validation_df, full_training_frame):
     return training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix
 
 
-# Testing Functions
-test_df = load_all(d1_test)
-test_labels = test_df[1].values
-train_df = load_all(d1_train)
-training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix = build_features(test_df, train_df, test_df, train_df)
-print(training_matrix.shape)
-print(testing_matrix.shape)
-print(validation_matrix.shape)
-print(full_training_matrix.shape)
+# Load all of the data files
+d1_train_full = load_all(d1_train)
+d1_test = load_all(d1_test)
+d2_train_full = load_all(d2_train)
+d2_test = load_all(d2_test)
+d3_train_full = load_all(d3_train)
+d3_test = load_all(d3_test)
+
+# Split each training dataset into a 70/30 group with 70% training and 30% validation
+d1_train_70, d1_validation = train_test_split(d1_train_full, random_state = 456, train_size = .7)
+d2_train_70, d2_validation = train_test_split(d2_train_full, random_state = 456, train_size = .7)
+d3_train_70, d3_validation = train_test_split(d3_train_full, random_state = 456, train_size = .7)
+
+# Generate a labels array for each matrix representing the label for each row in the matrix
+# Since a row represents an email, an example is as follows:
+# d1_train_70[0] represents an array containing the frequency counts for all words in the first email of the set
+# and d1_train_70_labels[0] contains the label for the email held in d1_train_70[0] (either "ham" or "spam")
+# D1 labels
+d1_train_full_labels = d1_train_full[1].values
+d1_test_labels = d1_test[1].values
+d1_train_70_labels = d1_train_70[1].values
+d1_validation_labels = d1_validation[1].values
+# D2 labels
+d2_train_full_labels = d2_train_full[1].values
+d2_test_labels = d2_test[1].values
+d2_train_70_labels = d2_train_70[1].values
+d2_validation_labels = d2_validation[1].values
+# D3 labels
+d3_train_full_labels = d3_train_full[1].values
+d3_test_labels = d3_test[1].values
+d3_train_70_labels = d3_train_70[1].values
+d3_validation_labels = d3_validation[1].values
+
+# Create the Matrix representation for each dataset and its associated frames
+#! Use these matrices + the labels arrays as input to your model
+d1_train_matrix_70, d1_test_matrix, d1_cv, d1_validation_matrix, d1_train_full_matrix = build_features(d1_train_70, d1_test, d1_validation, d1_train_full)
+d2_train_matrix_70, d2_test_matrix, d2_cv, d2_validation_matrix, d2_train_full_matrix = build_features(d2_train_70, d2_test, d2_validation, d2_train_full)
+d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_matrix = build_features(d3_train_70, d3_test, d3_validation, d3_train_full)
+
+
+#! Testing Functions
+# print(d1_train_matrix_70.shape), print(d1_train_70_labels.size)
+# print(d2_train_matrix_70.shape), print(d2_train_70_labels.size)
+# print(d3_train_matrix_70.shape), print(d3_train_70_labels.size)
+# test_df = load_all(d1_test)
+# test_labels = test_df[1].values
+# train_df = load_all(d1_train)
+# training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix = build_features(test_df, train_df, test_df, train_df)
+# print(training_matrix.shape)
+# print(testing_matrix.shape)
+# print(validation_matrix.shape)
+# print(full_training_matrix.shape)
 #cv = CountVectorizer(binary=False, max_df=0.95)
 #cv = cv.fit_transform(test_df[0].values).toarray()
 # print(cv.vocabulary_)
@@ -142,7 +185,6 @@ print(full_training_matrix.shape)
 # print(test_labels.size)
 # build_features(1,2)
 # build_features(1,2,3)
-
 #test_df['text'] = test_df[0]
 # print(test_df['text'])
 # print(test_df[0][404])
