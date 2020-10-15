@@ -30,6 +30,13 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds):
     # Create an empty parameters list
     parameters = [0.0 for i in range(len(training_set[0]))]
 
+    # Transform the classifications from textual to numeric
+    for z in range(len(classifications)):
+        if (classifications[z] == 'ham'):
+            classifications[z] = 1
+        if (classifications[z] == 'spam'):
+            classifications[z] = 0
+
     # First loop which determines number of training rounds
     for round in range(n_rounds):
         # Define the total error
@@ -48,13 +55,11 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds):
             total_error += error**2
 
             # Update W0 coefficient
-            parameters[0] = parameters[0] + learn_rate * 1
-            *(classifications[i] - (exp(parameters[0] + parameters[0]*1)/(1+exp(parameters[0] + parameters[0]*1))))
+            parameters[0] = parameters[0] + learn_rate * 1 * (classifications[i] - (exp(parameters[0] + parameters[0]*1)/(1+exp(parameters[0] + parameters[0]*1))))
 
             # Third Loop to update all coefficients Wi
             for j in range(len(instance)-1):
-                parameters[j+1] = parameters[j+1] + learn_rate * instance[j]
-                * (classifications[i] - (exp(parameters[0] + parameters[j+1]*instance[j]) / (1+(exp(parameters[0] + parameters[j+1]*instance[j])))))
+                parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (classifications[i] - (exp(parameters[0] + parameters[j+1]*instance[j]) / (1+(exp(parameters[0] + parameters[j+1]*instance[j])))))
 
             # Increment i
             i += 1
