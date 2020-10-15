@@ -2,7 +2,12 @@
 from numpy import array, dot, random
 from random import choice
 import pandas as pd
+import os
+import re
+from collections import Counter
 import matplotlib.pyplot as plt
+from project2_executable import load_all
+from dataset_engineering import make_dataset, get_word_frequency, split_train_set_to_70_train_30_validation
 
 """
 Implement the perceptron algorithm (use the perceptron training rule and not the gradient descent rule).
@@ -24,6 +29,7 @@ Then, use the chosen value of hyper-parameter, train on the full training datase
 #                    { -1, else
 step_function = lambda x: 0 if x < 0 else 1
 
+
 # x_i: the current value
 # t: the target value
 # o: the current prediction
@@ -35,8 +41,15 @@ def calculate_delta_w(current_value, target_value, current_prediction, learning_
 def update_weights(w_i, delta_w):
     return w_i + delta_w
 
+
+train_set_ham = make_dataset('dataset_1/train/ham', 0)  # replace the paths with variables once done developing
+train_set_spam = make_dataset('dataset_1/train/spam', 1)  # replace the paths with variables once done developing
+total_train_set = train_set_ham + train_set_spam
+
+train_set_70, validation_set = split_train_set_to_70_train_30_validation(total_train_set)
+
 # Replace this training set with the real set
-training_dataset = [(array([0, 0, 1]), 0), (array([0, 1, 1]), 1), (array([1, 0, 1]), 1), (array([1, 1, 1]), 1)]
+# train_set = [(array([0, 0, 1]), 0), (array([0, 1, 1]), 1), (array([1, 0, 1]), 1), (array([1, 1, 1]), 1)]
 
 # Assign 3 random weights to start
 weights = random.rand(3)
@@ -52,7 +65,7 @@ n = 100
 
 # Model training
 for j in range(n):
-    x, expected = choice(training_dataset) # get a random set for input in the training data
+    x, expected = choice(total_train_set) # get a random set for input in the training data
     result = dot(weights, x) # calculate the dot product of the input/current value and the weights
     err = expected - step_function(result) # compare the prediction with the expected result
     error.append(err) #*** Remove this line later ***
@@ -65,7 +78,7 @@ for j in range(n):
 
 # Model evaluation
 # *** DO WE TEST THIS ON THE VALIDATION SET OR THE TEST SET? ***
-for x, _ in training_dataset:
+for x, _ in total_train_set:
     result = dot(x, weights) # calculate the dot product of the input/current value and the weights
     print('{}: {} -> {}'.format(x[:2], result, step_function(result))) # print the input, the actual value, predicted result, and expected result to see if they match
 
