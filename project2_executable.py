@@ -5,6 +5,7 @@ import os
 import glob
 import re
 import MCAP_LR
+import multinomial_nb
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -193,3 +194,6 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df['text'])
 # print(test_df[0][404])
 # print(test_df)
+
+nb_accuracy = multinomial_nb.get_nb_accuracy(d1_train_full_labels, d1_test_labels, d1_train_full_matrix, d1_test_matrix)
+print(nb_accuracy)
