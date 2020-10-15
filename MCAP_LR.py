@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import math
 from math import exp
+import numpy as np
 
 # Prediction function for learning and evaluation
 # Instance represents a single instance of the dataset which includes email body text and a classification (0,1)
@@ -22,6 +23,21 @@ def make_prediction(instance, parameters):
     # If prediction >= 0 then Spam (0)
     # If Prediction < 0 we assign Ham (1)
     return prediction
+
+def new_make_prediction(instance, parameters):
+    # Define a prediction variable and add w0 to it
+    prediction = parameters[0]
+
+    # For a given Xi, compute Wi * Xi. Sum the results across all Xi
+    weighted_sum = 0
+    for i in range (len(instance) - 1):
+        weighted_sum += instance[i] * parameters[i+1]
+
+    # Add the weighted sum to w0 to form our complete prediction
+    prediction += weighted_sum
+
+    # Return the prediction value for classification
+    return 1.0 / (1.0 + exp(-prediction))
 
 # Gradient Ascent function to learn the parameters.
 # n_rounds is the number of training epochs
@@ -48,19 +64,18 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds):
         # Second Loop for each row in the training set
         for instance in training_set:
             # Make a prediction using the current coefficients
-            predicted_y = make_prediction(instance, parameters)
+            predicted_y = new_make_prediction(instance, parameters)
 
             # Update the error
             error = classifications[i] - predicted_y
             total_error += error**2
 
             # Update W0 coefficient
-            parameters[0] = parameters[0] + learn_rate * 1 * (classifications[i] - (exp(parameters[0] + parameters[0]*1)/(1+exp(parameters[0] + parameters[0]*1))))
+            parameters[0] = parameters[0] + learn_rate * 1 * (classifications[i] - predicted_y)
 
             # Third Loop to update all coefficients Wi
             for j in range(len(instance)-1):
-                parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (classifications[i] - (exp(parameters[0] + parameters[j+1]*instance[j]) / (1+(exp(parameters[0] + parameters[j+1]*instance[j])))))
-
+                parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (classifications[i] - predicted_y)
             # Increment i
             i += 1
         # Print some results of the training round

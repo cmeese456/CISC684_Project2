@@ -205,3 +205,7 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 #print(nb_accuracy_d3)
 
 trained_parameters = MCAP_LR.gradient_ascent(d1_train_full_matrix, d1_train_full_labels, .3, 100)
+print(trained_parameters)
+# parameters = [0.0 for i in range(len(d1_train_full_matrix[0]))]
+# prediction = MCAP_LR.new_make_prediction(d1_train_full_matrix[0], parameters)
+# print(prediction)
