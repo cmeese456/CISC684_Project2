@@ -6,6 +6,7 @@ import glob
 import re
 import MCAP_LR
 import multinomial_nb
+import dataset_engineering
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -163,6 +164,7 @@ d2_train_matrix_70, d2_test_matrix, d2_cv, d2_validation_matrix, d2_train_full_m
 d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_matrix = build_features(d3_train_70, d3_test, d3_validation, d3_train_full)
 
 
+
 #! Testing Functions
 # print(stop_list)
 # print(d1_cv.stop_words)
@@ -195,5 +197,16 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df[0][404])
 # print(test_df)
 
-nb_accuracy = multinomial_nb.get_nb_accuracy(d1_train_full_labels, d1_test_labels, d1_train_full_matrix, d1_test_matrix)
-print(nb_accuracy)
+#nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full_labels, d1_test_labels, d1_train_full_matrix, d1_test_matrix)
+#nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full_labels, d2_test_labels, d2_train_full_matrix, d2_test_matrix)
+#nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full_labels, d3_test_labels, d3_train_full_matrix, d3_test_matrix)
+#print(nb_accuracy_d1)
+#print(nb_accuracy_d2)
+#print(nb_accuracy_d3)
+
+MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)
+# trained_parameters = MCAP_LR.gradient_ascent(d1_train_full_matrix, d1_train_full_labels, .3, 100, .01)
+# print(trained_parameters)
+# parameters = [0.0 for i in range(len(d1_train_full_matrix[0]))]
+# prediction = MCAP_LR.new_make_prediction(d1_train_full_matrix[0], parameters)
+# print(prediction)
