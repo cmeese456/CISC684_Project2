@@ -2,12 +2,19 @@ from math import log
 from operator import add
 import sys
 
+################################################################################
+# There's a bug in this version that causes apply_multinomial_nb to always guess
+# ham. I think it might have to do with how I'm extracting tokens from the test
+# docs, but I'm really not sure. The multi_nb_dictver version does not have that
+# same issue.
+################################################################################
+
 # Practical version
 def train_multinomial_nb(labels, train_matrix):
     labels = list(labels)
     label_names = list(set(labels))
     # Unique words/terms (i.e. the columns in the dataframe)
-    labeled_tokens = get_labeled_tokens(labels, train_matrix) # Not the same thing as vocab; will have to ajdust things
+    labeled_tokens = get_labeled_tokens(labels, train_matrix) # Not the same thing as vocab; will have to adjust things
     # Number of total documents (i.e. number of rows in the dataframe)
     num_docs = len(train_matrix)
     # Priors for each class
