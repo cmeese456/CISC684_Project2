@@ -7,13 +7,28 @@ import re
 import MCAP_LR
 import multinomial_nb
 import dataset_engineering
+from perceptron_algorithm import run_perceptron
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-# Command line compiling stuff here:
+# get command line arguments ************ UNCOMMENT AFTER FINISHED DEVELOPING *********
+algorithm_to_run = sys.argv[1].upper()
+ham_train_set_path = sys.argv[2]
+ham_test_set_path = sys.argv[3]
+spam_train_set_path = sys.argv[4]
+spam_test_set_path = sys.argv[5]
+
+if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
+    run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
+    print('\nExiting program...\n')
+    sys.exit()
+elif algorithm_to_run == 'MCAP':
+    pass
+elif algorithm_to_run == 'NB':
+    pass
 
 # Setup path variables for dataset files
 d1_train = "dataset_1/train/"
