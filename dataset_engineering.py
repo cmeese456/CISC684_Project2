@@ -1,4 +1,8 @@
 # This file is used for engineering the dataset
+import os
+import re
+from collections import Counter
+
 
 def get_word_frequency(some_text):
     word_frequency = Counter(re.findall(r'\w+', some_text))
@@ -27,3 +31,12 @@ def split_train_set_to_70_train_30_validation(training_set):
             validation_set.append(training_set[i])
 
     return training_set_70, validation_set
+
+
+def get_unique_words(txt_files):
+    bag_of_words = []
+    for text in txt_files:
+        for word in text[0]:
+            bag_of_words.append(word)
+
+    return list(set(bag_of_words))
