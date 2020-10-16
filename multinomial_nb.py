@@ -22,9 +22,6 @@ def get_nb_accuracy(train_labels, train_docs, test_labels, test_docs, stop_words
         guess = apply_multinomial_nb(test_labels, vocab, class_priors, cond_prob, test_docs[i])
         if (guess == test_labels[i]):
             correct += 1
-        #else:
-        #    print("Guessed: " + guess + "; Class: " + test_labels[i])
-        #    print(test_docs[i])
     accuracy = correct / len(test_docs)
     return accuracy
 
@@ -32,9 +29,10 @@ def train_multinomial_nb(labels, docs, stop_words=[]):
     """
     Train a multinomial naive Bayes classifier to classify text strings.
 
-    input: labels, docs
+    input: labels, docs, stop_words
     labels and docs are columns of a pandas dataframe. docs contains strings of
     email messages. labels denotes the class/label those messages belong to.
+    stop_words is a list of words to be ignored.
 
     output: vocab, class_priors, cond_prob
     vocab is the set of unique words in the entire training text. class_priors
@@ -42,16 +40,11 @@ def train_multinomial_nb(labels, docs, stop_words=[]):
     probability of each word for each class/label.
     """
     labels = list(labels)
-    vocab = list(set(' '.join(docs).split(' ')))
-    # Number of total documents (i.e. number of rows in the docs dataframe)
+    vocab = [word for word in list(set(' '.join(docs).split(' '))) if word not in stop_words]
     num_docs = len(docs)
     unique_labels = set(labels)
     class_priors = {}
     cond_prob = init_cond_prob(vocab, unique_labels)
-    #if (stop_words):
-    #    stop_words = stop_words + get_filter_words(docs)
-    #else:
-    #    stop_words = get_filter_words(docs)
     for label in unique_labels:
         num_docs_in_class = labels.count(label)
         class_priors[label] = num_docs_in_class / num_docs
@@ -95,26 +88,6 @@ def apply_multinomial_nb(labels, vocab, class_priors, cond_prob, doc):
             most_likely_class = label
     return most_likely_class
 
-def get_filter_words(docs, max_threshold=0.95):
-    """
-    Helper function to get words that appear in docs with frequency at or above
-    the max_threshold.
-    """
-    filter_words = []
-    word_freqs = {}
-    for doc in docs:
-        for unique_word in set(doc.split(" ")):
-            freq = word_freqs.get(unique_word)
-            if (freq):
-                word_freqs[unique_word] = freq + 1
-            else:
-                word_freqs[unique_word] = 1
-    for word, freq in word_freqs.items():
-        rel_freq = freq / len(docs)
-        if (rel_freq >= max_threshold):
-            filter_words.append(word)
-    return filter_words
-
 def get_text_in_class(docs, label, labels):
     """
     Helper function to get one large string of all the text matching a given
@@ -137,3 +110,26 @@ def init_cond_prob(vocab, unique_labels):
         for label in unique_labels:
             cond_prob[term][label] = 0
     return cond_prob
+
+'''
+
+def get_filter_words(docs, max_threshold=0.95):
+    """
+    Helper function to get words that appear in docs with frequency at or above
+    the max_threshold.
+    """
+    filter_words = []
+    word_freqs = {}
+    for doc in docs:
+        for unique_word in set(doc.split(" ")):
+            freq = word_freqs.get(unique_word)
+            if (freq):
+                word_freqs[unique_word] = freq + 1
+            else:
+                word_freqs[unique_word] = 1
+    for word, freq in word_freqs.items():
+        rel_freq = freq / len(docs)
+        if (rel_freq >= max_threshold):
+            filter_words.append(word)
+    return filter_words
+'''
