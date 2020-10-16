@@ -5,7 +5,8 @@ import os
 import glob
 import re
 import MCAP_LR
-import multinomial_nb
+#import multinomial_nb
+import multi_nb_dictver
 import dataset_engineering
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
@@ -197,14 +198,20 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df[0][404])
 # print(test_df)
 
-#nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full_labels, d1_test_labels, d1_train_full_matrix, d1_test_matrix)
-#nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full_labels, d2_test_labels, d2_train_full_matrix, d2_test_matrix)
-#nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full_labels, d3_test_labels, d3_train_full_matrix, d3_test_matrix)
-#print(nb_accuracy_d1)
-#print(nb_accuracy_d2)
-#print(nb_accuracy_d3)
+#nb_accuracy_d1 = multi_nb_dictver.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1],  d1_test[0])
 
-MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)
+# Read in the list of stop words
+reduced_stop_file = open("reduced_stop.txt")
+reduced_stop_list = reduced_stop_file.read().splitlines()
+
+nb_accuracy_d1 = multi_nb_dictver.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0], reduced_stop_list)
+print(nb_accuracy_d1)
+nb_accuracy_d2 = multi_nb_dictver.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0], reduced_stop_list)
+print(nb_accuracy_d2)
+nb_accuracy_d3 = multi_nb_dictver.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0], reduced_stop_list)
+print(nb_accuracy_d3)
+
+#MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)
 # trained_parameters = MCAP_LR.gradient_ascent(d1_train_full_matrix, d1_train_full_labels, .3, 100, .01)
 # print(trained_parameters)
 # parameters = [0.0 for i in range(len(d1_train_full_matrix[0]))]

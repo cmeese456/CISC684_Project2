@@ -2,24 +2,32 @@ from math import log
 from operator import add
 import sys
 
+################################################################################
+# There's a bug in this version that causes apply_multinomial_nb to always guess
+# ham. I think it might have to do with how I'm extracting tokens from the test
+# docs, but I'm really not sure. The multi_nb_dictver version does not have that
+# same issue.
+################################################################################
+
 # Practical version
 def train_multinomial_nb(labels, train_matrix):
     labels = list(labels)
     label_names = list(set(labels))
     # Unique words/terms (i.e. the columns in the dataframe)
-    labeled_tokens = get_labeled_tokens(labels, train_matrix) # Not the same thing as vocab; will have to ajdust things
+    labeled_tokens = get_labeled_tokens(labels, train_matrix) # Not the same thing as vocab; will have to adjust things
     # Number of total documents (i.e. number of rows in the dataframe)
     num_docs = len(train_matrix)
     # Priors for each class
     class_priors = {}
     # Conditional probabilities for words in each class
     cond_prob = {}
-    vocab_size = get_vocab_size(train_matrix)
+    vocab_size = len(train_matrix[0])
     for label in label_names:
         cond_prob[label] = {}
         num_docs_in_class = labels.count(label)
         class_priors[label] = num_docs_in_class / num_docs
         num_tokens_in_class = len([token for token in labeled_tokens[label] if token != 0])
+        #num_tokens_in_class = sum(labeled_tokens[label])
         for term in range(len(train_matrix[0])):
             tokens_of_term_in_class = labeled_tokens[label][term]
             cond_prob[label][term] = (tokens_of_term_in_class + 1) / (num_tokens_in_class + vocab_size)
@@ -38,16 +46,6 @@ def get_labeled_tokens(labels, train_matrix):
             if (labels[i] == key):
                 labeled_tokens[key] = list(map(add, train_matrix[i], labeled_tokens[key]))
     return labeled_tokens
-
-def get_vocab_size(train_matrix):
-    # train_matrix could contain columns that equal 0 in every row. We want to
-    # ignore those columns to find the size of the vocab that's actually
-    # present in the training set.
-    vocab = [0] * len(train_matrix[0])
-    for i in range(len(train_matrix)):
-        vocab = list(map(add, train_matrix[i], vocab))
-    vocab_size = len([term for term in vocab if term != 0])
-    return vocab_size
 
 # Practical version
 def apply_multinomial_nb(labels, class_priors, cond_prob, doc):
