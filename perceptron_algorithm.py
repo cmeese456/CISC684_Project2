@@ -1,6 +1,3 @@
-# %%
-# import pandas as pd
-# from project2_executable import load_all
 from dataset_engineering import make_dataset, get_word_frequency, split_train_set_to_70_train_30_validation, get_unique_words
 
 """
