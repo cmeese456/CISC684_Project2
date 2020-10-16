@@ -15,6 +15,10 @@ from sklearn.linear_model import LogisticRegression
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
 # get command line arguments ************ UNCOMMENT AFTER FINISHED DEVELOPING *********
+# EXAMPLE RUN COMMANDS:
+# Perceptron:
+#       python3 project2_executable.py  PERCEPTRON 'dataset_1/train/ham/' 'dataset_1/test/ham/' 'dataset_1/train/spam/' 'dataset_1/test/spam'
+
 algorithm_to_run = sys.argv[1].upper()
 ham_train_set_path = sys.argv[2]
 ham_test_set_path = sys.argv[3]
