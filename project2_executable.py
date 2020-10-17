@@ -19,20 +19,21 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 # Perceptron:
 #       python3 project2_executable.py  PERCEPTRON 'dataset_1/train/ham/' 'dataset_1/test/ham/' 'dataset_1/train/spam/' 'dataset_1/test/spam'
 
-algorithm_to_run = sys.argv[1].upper()
-ham_train_set_path = sys.argv[2]
-ham_test_set_path = sys.argv[3]
-spam_train_set_path = sys.argv[4]
-spam_test_set_path = sys.argv[5]
+#! Commented for now to test my stuff
+# algorithm_to_run = sys.argv[1].upper()
+# ham_train_set_path = sys.argv[2]
+# ham_test_set_path = sys.argv[3]
+# spam_train_set_path = sys.argv[4]
+# spam_test_set_path = sys.argv[5]
 
-if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
-    run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
-    print('\nExiting program...\n')
-    sys.exit()
-elif algorithm_to_run == 'MCAP':
-    pass
-elif algorithm_to_run == 'NB':
-    pass
+# if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
+#     run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
+#     print('\nExiting program...\n')
+#     sys.exit()
+# elif algorithm_to_run == 'MCAP':
+#     pass
+# elif algorithm_to_run == 'NB':
+#     pass
 
 # Setup path variables for dataset files
 d1_train = "dataset_1/train/"
@@ -139,6 +140,19 @@ def build_features(train_df, test_df, validation_df, full_training_frame):
     # Return the four dfs and cv
     return training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix
 
+def run_logistic_regression():
+    # Run regression on dataset 1
+    print("\nRUNNING LOG REGRESSION ON DATASET 1\n")
+    MCAP_LR.driver(d1_train_full_matrix, d1_train_matrix_70, d1_validation_matrix, d1_test_matrix, d1_train_full_labels, d1_test_labels, d1_train_70_labels, d1_validation_labels)
+
+    # Run regression on dataset 2
+    print("\nRUNNING LOG REGRESSION ON DATASET 2\n")
+    MCAP_LR.driver(d2_train_full_matrix, d2_train_matrix_70, d2_validation_matrix, d2_test_matrix, d2_train_full_labels, d2_test_labels, d2_train_70_labels, d2_validation_labels)
+
+    # Run regression on dataset 3
+    print("\nRUNNING LOG REGRESSION ON DATASET 3\n")
+    MCAP_LR.driver(d3_train_full_matrix, d3_train_matrix_70, d3_validation_matrix, d3_test_matrix, d3_train_full_labels, d3_test_labels, d3_train_70_labels, d3_validation_labels)
+
 # Preprocess the stop list so it is consistent with our input
 for x in stop_list:
     x = text_preprocess(x)
@@ -223,9 +237,11 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 #print(nb_accuracy_d2)
 #print(nb_accuracy_d3)
 
-MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)
+#MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels, d1_train_70_labels, d1_validation_labels)
 # trained_parameters = MCAP_LR.gradient_ascent(d1_train_full_matrix, d1_train_full_labels, .3, 100, .01)
 # print(trained_parameters)
 # parameters = [0.0 for i in range(len(d1_train_full_matrix[0]))]
 # prediction = MCAP_LR.new_make_prediction(d1_train_full_matrix[0], parameters)
 # print(prediction)
+#MCAP_LR.driver(d3_train_full_matrix, d3_train_matrix_70, d3_validation_matrix, d3_test_matrix, d3_train_full_labels, d3_test_labels, d3_train_70_labels, d3_validation_labels)
+run_logistic_regression()
