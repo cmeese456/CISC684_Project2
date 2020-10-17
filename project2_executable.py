@@ -134,6 +134,7 @@ d3_train_full = load_all(d3_train)
 d3_test = load_all(d3_test)
 
 # Split each training dataset into a 70/30 group with 70% training and 30% validation
+# Suppress FutureWarning
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore")
     d1_train_70, d1_validation = train_test_split(d1_train_full, random_state = 456, train_size = .7)
@@ -200,16 +201,11 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df[0][404])
 # print(test_df)
 
-# Read in the list of stop words. List retrieved from
-# https://github.com/mongodb/mongo/blob/master/src/mongo/db/fts/stop_words_english.txt
-reduced_stop_file = open("reduced_stop.txt")
-#reduced_stop_list = reduced_stop_file.read().splitlines()
-reduced_stop_list = []
-nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0], reduced_stop_list)
+nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
 print(nb_accuracy_d1)
-nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0], reduced_stop_list)
+nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
 print(nb_accuracy_d2)
-nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0], reduced_stop_list)
+nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
 print(nb_accuracy_d3)
 
 #MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)

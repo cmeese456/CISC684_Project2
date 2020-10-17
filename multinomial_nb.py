@@ -40,6 +40,7 @@ def train_multinomial_nb(labels, docs, stop_words=[]):
     probability of each word for each class/label.
     """
     labels = list(labels)
+    stop_words = stop_words + get_filter_words(docs, max_threshold=0.3, min_threshold=0)
     vocab = [word for word in list(set(' '.join(docs).split(' '))) if word not in stop_words]
     num_docs = len(docs)
     unique_labels = set(labels)
@@ -111,9 +112,7 @@ def init_cond_prob(vocab, unique_labels):
             cond_prob[term][label] = 0
     return cond_prob
 
-'''
-
-def get_filter_words(docs, max_threshold=0.95):
+def get_filter_words(docs, max_threshold=0.95, min_threshold=1):
     """
     Helper function to get words that appear in docs with frequency at or above
     the max_threshold.
@@ -129,7 +128,6 @@ def get_filter_words(docs, max_threshold=0.95):
                 word_freqs[unique_word] = 1
     for word, freq in word_freqs.items():
         rel_freq = freq / len(docs)
-        if (rel_freq >= max_threshold):
+        if (rel_freq >= max_threshold or freq <= min_threshold):
             filter_words.append(word)
     return filter_words
-'''
