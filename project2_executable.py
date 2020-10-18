@@ -20,20 +20,20 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 #       python3 project2_executable.py  PERCEPTRON 'dataset_1/train/ham/' 'dataset_1/test/ham/' 'dataset_1/train/spam/' 'dataset_1/test/spam'
 
 #! Commented for now to test my stuff
-# algorithm_to_run = sys.argv[1].upper()
-# ham_train_set_path = sys.argv[2]
-# ham_test_set_path = sys.argv[3]
-# spam_train_set_path = sys.argv[4]
-# spam_test_set_path = sys.argv[5]
+algorithm_to_run = sys.argv[1].upper()
+ham_train_set_path = sys.argv[2]
+ham_test_set_path = sys.argv[3]
+spam_train_set_path = sys.argv[4]
+spam_test_set_path = sys.argv[5]
 
-# if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
-#     run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
-#     print('\nExiting program...\n')
-#     sys.exit()
-# elif algorithm_to_run == 'MCAP':
-#     pass
-# elif algorithm_to_run == 'NB':
-#     pass
+if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
+    run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
+    print('\nExiting program...\n')
+    sys.exit()
+elif algorithm_to_run == 'MCAP':
+    run_logistic_regression()
+elif algorithm_to_run == 'NB':
+    pass
 
 # Setup path variables for dataset files
 d1_train = "dataset_1/train/"
@@ -94,9 +94,25 @@ def load_data(path, identifier):
     big_df = pd.DataFrame.from_dict(df, orient='index')
     return big_df
 
+def load_data_full_path(path, identifier):
+     # instantiate empty array and iterator
+    i = 0
+    df = {}
+
+    # Loop through every file in the path subfolder denoted by identifier (spam or ham)
+    # For each file, open it to read, replace new lines with spaces and preprocess the text
+    # Then create an object representing each email with (contents, identifier) and add it to the array
+    # Lastly convert the array into a dataframe using from_dict and return it
+    for x in glob.glob(os.path.join(path, '*')):
+        file_contents = open(x, 'r', errors='ignore').read().replace('\n', ' ')
+        file_contents = text_preprocess(file_contents)
+        data_item = [file_contents, identifier]
+        df[i] = data_item
+        i += 1
+    big_df = pd.DataFrame.from_dict(df, orient='index')
+    return big_df
+
 # Function to preprocess the text of an email and prepare it for analysis
-
-
 def text_preprocess(text):
     # remove all sepcial characters
     text = re.sub(r'\W', ' ', text)
@@ -244,4 +260,4 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # prediction = MCAP_LR.new_make_prediction(d1_train_full_matrix[0], parameters)
 # print(prediction)
 #MCAP_LR.driver(d3_train_full_matrix, d3_train_matrix_70, d3_validation_matrix, d3_test_matrix, d3_train_full_labels, d3_test_labels, d3_train_70_labels, d3_validation_labels)
-run_logistic_regression()
+#run_logistic_regression()
