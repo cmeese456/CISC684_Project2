@@ -45,9 +45,7 @@ def new_make_prediction(instance, parameters):
 
 
 # Gradient Ascent function to learn the parameters.
-# n_rounds is the number of training epochs
-#! TODO: Ensure the parameter update equations are correct
-#! TODO: Figure out how to incorporate the L2 Smoothing correctly
+# n_rounds is the number of training cycles
 def gradient_ascent(training_set, classifications, learn_rate, n_rounds, lambda_value):
     # Create an empty parameters list
     parameters = [0.0 for i in range(len(training_set[0]))]
@@ -90,7 +88,7 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds, lambda_
             i += 1
 
         # Print some results of the training round
-        print('>traing_round=%d, learning_rate=%.3f, error=%.3f' % (round, learn_rate, total_error))
+        print('>~traing_round=%d, learning_rate=%.3f, error=%.3f' % (round, learn_rate, total_error))
 
     # Return the parameters array
     return parameters
@@ -130,7 +128,6 @@ def test_the_model(testing_set, classifications, weights):
 
 
 # Function to drive the entire MCAP_LR Procedure
-#! TODO: Figure out how we can learn lambda from the 70/30 validation/test split
 def driver(full_training_set, training_set_70, validation_set, testing_set, train_class, testing_class, train_70_class, validation_class):
     # Define necessary inputs to train the model
     learning_rate = 0.4
@@ -167,14 +164,3 @@ def driver(full_training_set, training_set_70, validation_set, testing_set, trai
 
     # Report the final results
     print("The final accuracy on the testing set is: %.3f" % accuracy)
-
-# Learn parameters using the 70% split
-
-# Use the 30% of data as a validation set to select lambda
-
-# Then use selected value of Lambda to learn parameters from the full training set
-
-# Use gradient ascent for learning the weights (set appropriate learning rate)
-# Implement a hard limit on the number of iterations for gradient ascent
-
-# Implement the algorithm
