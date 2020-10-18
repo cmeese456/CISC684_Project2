@@ -20,21 +20,21 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 # Perceptron:
 #       python3 project2_executable.py  PERCEPTRON 'dataset_1/train/ham/' 'dataset_1/test/ham/' 'dataset_1/train/spam/' 'dataset_1/test/spam'
 
-#! Commented for now to test my stuff
-algorithm_to_run = sys.argv[1].upper()
-ham_train_set_path = sys.argv[2]
-ham_test_set_path = sys.argv[3]
-spam_train_set_path = sys.argv[4]
-spam_test_set_path = sys.argv[5]
+# #! Commented for now to test my stuff
+# algorithm_to_run = sys.argv[1].upper()
+# ham_train_set_path = sys.argv[2]
+# ham_test_set_path = sys.argv[3]
+# spam_train_set_path = sys.argv[4]
+# spam_test_set_path = sys.argv[5]
 
-if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
-    run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
-    print('\nExiting program...\n')
-    sys.exit()
-elif algorithm_to_run == 'MCAP':
-    run_logistic_regression()
-elif algorithm_to_run == 'NB':
-    pass
+# if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
+#     run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
+#     print('\nExiting program...\n')
+#     sys.exit()
+# elif algorithm_to_run == 'MCAP':
+#     run_logistic_regression()
+# elif algorithm_to_run == 'NB':
+#     pass
 
 # Setup path variables for dataset files
 d1_train = "dataset_1/train/"
@@ -216,7 +216,52 @@ d1_train_matrix_70, d1_test_matrix, d1_cv, d1_validation_matrix, d1_train_full_m
 d2_train_matrix_70, d2_test_matrix, d2_cv, d2_validation_matrix, d2_train_full_matrix = build_features(d2_train_70, d2_test, d2_validation, d2_train_full)
 d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_matrix = build_features(d3_train_70, d3_test, d3_validation, d3_train_full)
 
+def run_the_models(model_to_run="all"):
+    if model_to_run == "all":
+        # Run the NB model
+        nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+        print(nb_accuracy_d1)
+        nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+        print(nb_accuracy_d2)
+        nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+        print(nb_accuracy_d3)
 
+        # Run the MCAP Model
+        run_logistic_regression()
+
+        # Run the Perceptron Model
+        run_perceptron('dataset_1/train/ham', 'dataset_1/test/ham', 'dataset_1/train/spam', 'dataset_1/test/spam')
+        run_perceptron('dataset_2/train/ham', 'dataset_2/test/ham', 'dataset_2/train/spam', 'dataset_2/test/spam')
+        run_perceptron('dataset_3/train/ham', 'dataset_3/test/ham', 'dataset_3/train/spam', 'dataset_3/test/spam')
+
+
+    if model_to_run == 'NB' or model_to_run == 'nb' or model_to_run == 'Nb':
+         # Run the NB model
+        nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+        print(nb_accuracy_d1)
+        nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+        print(nb_accuracy_d2)
+        nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+        print(nb_accuracy_d3)
+
+    if model_to_run == 'MCAP' or model_to_run == 'mcap' or model_to_run == 'Mcap':
+        run_logistic_regression()
+
+    if model_to_run == 'Perceptron' or model_to_run == 'PERCEPTRON' or model_to_run == 'perceptron':
+        # Run the Perceptron Model
+        print('~~RUNNING PERCEPTRON ON DATASET 1~~')
+        run_perceptron('dataset_1/train/ham', 'dataset_1/test/ham', 'dataset_1/train/spam', 'dataset_1/test/spam')
+        print('~~RUNNING PERCEPTRON ON DATASET 2~~')
+        run_perceptron('dataset_2/train/ham', 'dataset_2/test/ham', 'dataset_2/train/spam', 'dataset_2/test/spam')
+        print('~~RUNNING PERCEPTRON ON DATASET 3~~')
+        run_perceptron('dataset_3/train/ham', 'dataset_3/test/ham', 'dataset_3/train/spam', 'dataset_3/test/spam')
+
+
+# Driver to run the program with command line arg
+if len(sys.argv) == 2:
+    run_the_models(sys.argv[1])
+else:
+    run_the_models()
 
 #! Testing Functions
 # print(stop_list)
@@ -250,12 +295,12 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df[0][404])
 # print(test_df)
 
-nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
-print(nb_accuracy_d1)
-nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
-print(nb_accuracy_d2)
-nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
-print(nb_accuracy_d3)
+# nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+# print(nb_accuracy_d1)
+# nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+# print(nb_accuracy_d2)
+# nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+# print(nb_accuracy_d3)
 
 
 #MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels, d1_train_70_labels, d1_validation_labels)
