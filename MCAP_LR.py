@@ -48,6 +48,7 @@ def new_make_prediction(instance, parameters):
 # n_rounds is the number of training cycles
 def gradient_ascent(training_set, classifications, learn_rate, n_rounds, lambda_value):
     # Create an empty parameters list
+    # We start with all weights = to 0
     parameters = [0.0 for i in range(len(training_set[0]))]
 
     # Transform the classifications from textual to numeric
@@ -67,28 +68,25 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds, lambda_
 
         # Second Loop for each row in the training set
         for instance in training_set:
+
             # Make a prediction using the current coefficients
-            predicted_y = new_make_prediction(instance, parameters)
+            prediction = new_make_prediction(instance, parameters)
 
             # Update the error
-            error = classifications[i] - predicted_y
-            total_error += error**2
+            error = classifications[i] - prediction
+            total_error += error * error
 
             # Update W0 coefficient
-            #parameters[0] = parameters[0] + learn_rate * 1 * (classifications[i] - predicted_y) - (learn_rate * lambda_value * parameters[0])
-            #parameters[0] = parameters[0] + learn_rate * 1 * (classifications[i] - predicted_y)
-            parameters[0] = parameters[0] + learn_rate * 1 * error * predicted_y * (1.0 - predicted_y) - (learn_rate * lambda_value * parameters[0])
+            parameters[0] = parameters[0] + learn_rate * 1 * (error * prediction * (1.0 - prediction)) - (learn_rate * lambda_value * parameters[0])
 
             # Third Loop to update all coefficients Wi
             for j in range(len(instance)-1):
-                #parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (classifications[i] - predicted_y) - (learn_rate * lambda_value * parameters[j+1])
-                #parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (classifications[i] - predicted_y)
-                parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * error * predicted_y * (1.0 - predicted_y) - (learn_rate * lambda_value * parameters[j+1])
+                parameters[j+1] = parameters[j+1] + learn_rate * instance[j] * (error * prediction * (1.0 - prediction)) - (learn_rate * lambda_value * parameters[j+1])
             # Increment i
             i += 1
 
         # Print some results of the training round
-        print('>~traing_round=%d, learning_rate=%.3f, error=%.3f' % (round, learn_rate, total_error))
+        print('>~training_round=%d, error=%.3f' % (round, total_error))
 
     # Return the parameters array
     return parameters
