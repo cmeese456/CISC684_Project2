@@ -4,6 +4,7 @@ import gzip
 import os
 import glob
 import re
+import warnings
 import MCAP_LR
 import multinomial_nb
 import dataset_engineering
@@ -15,20 +16,27 @@ from sklearn.linear_model import LogisticRegression
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
 # get command line arguments ************ UNCOMMENT AFTER FINISHED DEVELOPING *********
-algorithm_to_run = sys.argv[1].upper()
-ham_train_set_path = sys.argv[2]
-ham_test_set_path = sys.argv[3]
-spam_train_set_path = sys.argv[4]
-spam_test_set_path = sys.argv[5]
 
-if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
-    run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
-    print('\nExiting program...\n')
-    sys.exit()
-elif algorithm_to_run == 'MCAP':
-    pass
-elif algorithm_to_run == 'NB':
-    pass
+# EXAMPLE RUN COMMANDS:
+# Perceptron:
+#       python3 project2_executable.py  PERCEPTRON 'dataset_1/train/ham/' 'dataset_1/test/ham/' 'dataset_1/train/spam/' 'dataset_1/test/spam'
+
+# #! Commented for now to test my stuff
+# algorithm_to_run = sys.argv[1].upper()
+# ham_train_set_path = sys.argv[2]
+# ham_test_set_path = sys.argv[3]
+# spam_train_set_path = sys.argv[4]
+# spam_test_set_path = sys.argv[5]
+
+# if algorithm_to_run == 'PERCEPTRON' and len(sys.argv) == 6:
+#     run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
+#     print('\nExiting program...\n')
+#     sys.exit()
+# elif algorithm_to_run == 'MCAP':
+#     run_logistic_regression()
+# elif algorithm_to_run == 'NB':
+#     pass
+
 
 # Setup path variables for dataset files
 d1_train = "dataset_1/train/"
@@ -89,9 +97,25 @@ def load_data(path, identifier):
     big_df = pd.DataFrame.from_dict(df, orient='index')
     return big_df
 
+def load_data_full_path(path, identifier):
+     # instantiate empty array and iterator
+    i = 0
+    df = {}
+
+    # Loop through every file in the path subfolder denoted by identifier (spam or ham)
+    # For each file, open it to read, replace new lines with spaces and preprocess the text
+    # Then create an object representing each email with (contents, identifier) and add it to the array
+    # Lastly convert the array into a dataframe using from_dict and return it
+    for x in glob.glob(os.path.join(path, '*')):
+        file_contents = open(x, 'r', errors='ignore').read().replace('\n', ' ')
+        file_contents = text_preprocess(file_contents)
+        data_item = [file_contents, identifier]
+        df[i] = data_item
+        i += 1
+    big_df = pd.DataFrame.from_dict(df, orient='index')
+    return big_df
+
 # Function to preprocess the text of an email and prepare it for analysis
-
-
 def text_preprocess(text):
     # remove all sepcial characters
     text = re.sub(r'\W', ' ', text)
@@ -135,6 +159,19 @@ def build_features(train_df, test_df, validation_df, full_training_frame):
     # Return the four dfs and cv
     return training_matrix, testing_matrix, cv, validation_matrix, full_training_matrix
 
+def run_logistic_regression():
+    # Run regression on dataset 1
+    print("\nRUNNING LOG REGRESSION ON DATASET 1\n")
+    MCAP_LR.driver(d1_train_full_matrix, d1_train_matrix_70, d1_validation_matrix, d1_test_matrix, d1_train_full_labels, d1_test_labels, d1_train_70_labels, d1_validation_labels)
+
+    # Run regression on dataset 2
+    print("\nRUNNING LOG REGRESSION ON DATASET 2\n")
+    MCAP_LR.driver(d2_train_full_matrix, d2_train_matrix_70, d2_validation_matrix, d2_test_matrix, d2_train_full_labels, d2_test_labels, d2_train_70_labels, d2_validation_labels)
+
+    # Run regression on dataset 3
+    print("\nRUNNING LOG REGRESSION ON DATASET 3\n")
+    MCAP_LR.driver(d3_train_full_matrix, d3_train_matrix_70, d3_validation_matrix, d3_test_matrix, d3_train_full_labels, d3_test_labels, d3_train_70_labels, d3_validation_labels)
+
 # Preprocess the stop list so it is consistent with our input
 for x in stop_list:
     x = text_preprocess(x)
@@ -148,9 +185,12 @@ d3_train_full = load_all(d3_train)
 d3_test = load_all(d3_test)
 
 # Split each training dataset into a 70/30 group with 70% training and 30% validation
-d1_train_70, d1_validation = train_test_split(d1_train_full, random_state = 456, train_size = .7)
-d2_train_70, d2_validation = train_test_split(d2_train_full, random_state = 456, train_size = .7)
-d3_train_70, d3_validation = train_test_split(d3_train_full, random_state = 456, train_size = .7)
+# Suppress FutureWarning
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore")
+    d1_train_70, d1_validation = train_test_split(d1_train_full, random_state = 456, train_size = .7)
+    d2_train_70, d2_validation = train_test_split(d2_train_full, random_state = 456, train_size = .7)
+    d3_train_70, d3_validation = train_test_split(d3_train_full, random_state = 456, train_size = .7)
 
 # Generate a labels array for each matrix representing the label for each row in the matrix
 # Since a row represents an email, an example is as follows:
@@ -178,7 +218,52 @@ d1_train_matrix_70, d1_test_matrix, d1_cv, d1_validation_matrix, d1_train_full_m
 d2_train_matrix_70, d2_test_matrix, d2_cv, d2_validation_matrix, d2_train_full_matrix = build_features(d2_train_70, d2_test, d2_validation, d2_train_full)
 d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_matrix = build_features(d3_train_70, d3_test, d3_validation, d3_train_full)
 
+def run_the_models(model_to_run="all"):
+    if model_to_run == "all":
+        # Run the NB model
+        nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+        print(nb_accuracy_d1)
+        nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+        print(nb_accuracy_d2)
+        nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+        print(nb_accuracy_d3)
 
+        # Run the MCAP Model
+        run_logistic_regression()
+
+        # Run the Perceptron Model
+        run_perceptron('dataset_1/train/ham', 'dataset_1/test/ham', 'dataset_1/train/spam', 'dataset_1/test/spam')
+        run_perceptron('dataset_2/train/ham', 'dataset_2/test/ham', 'dataset_2/train/spam', 'dataset_2/test/spam')
+        run_perceptron('dataset_3/train/ham', 'dataset_3/test/ham', 'dataset_3/train/spam', 'dataset_3/test/spam')
+
+
+    if model_to_run == 'NB' or model_to_run == 'nb' or model_to_run == 'Nb':
+         # Run the NB model
+        nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+        print(nb_accuracy_d1)
+        nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+        print(nb_accuracy_d2)
+        nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+        print(nb_accuracy_d3)
+
+    if model_to_run == 'MCAP' or model_to_run == 'mcap' or model_to_run == 'Mcap':
+        run_logistic_regression()
+
+    if model_to_run == 'Perceptron' or model_to_run == 'PERCEPTRON' or model_to_run == 'perceptron':
+        # Run the Perceptron Model
+        print('~~RUNNING PERCEPTRON ON DATASET 1~~')
+        run_perceptron('dataset_1/train/ham', 'dataset_1/test/ham', 'dataset_1/train/spam', 'dataset_1/test/spam')
+        print('~~RUNNING PERCEPTRON ON DATASET 2~~')
+        run_perceptron('dataset_2/train/ham', 'dataset_2/test/ham', 'dataset_2/train/spam', 'dataset_2/test/spam')
+        print('~~RUNNING PERCEPTRON ON DATASET 3~~')
+        run_perceptron('dataset_3/train/ham', 'dataset_3/test/ham', 'dataset_3/train/spam', 'dataset_3/test/spam')
+
+
+# Driver to run the program with command line arg
+if len(sys.argv) == 2:
+    run_the_models(sys.argv[1])
+else:
+    run_the_models()
 
 #! Testing Functions
 # print(stop_list)
@@ -212,16 +297,22 @@ d3_train_matrix_70, d3_test_matrix, d3_cv, d3_validation_matrix, d3_train_full_m
 # print(test_df[0][404])
 # print(test_df)
 
-#nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full_labels, d1_test_labels, d1_train_full_matrix, d1_test_matrix)
-#nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full_labels, d2_test_labels, d2_train_full_matrix, d2_test_matrix)
-#nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full_labels, d3_test_labels, d3_train_full_matrix, d3_test_matrix)
-#print(nb_accuracy_d1)
-#print(nb_accuracy_d2)
-#print(nb_accuracy_d3)
+# nb_accuracy_d1 = multinomial_nb.get_nb_accuracy(d1_train_full[1], d1_train_full[0], d1_test[1], d1_test[0])
+# print(nb_accuracy_d1)
+# nb_accuracy_d2 = multinomial_nb.get_nb_accuracy(d2_train_full[1], d2_train_full[0], d2_test[1], d2_test[0])
+# print(nb_accuracy_d2)
+# nb_accuracy_d3 = multinomial_nb.get_nb_accuracy(d3_train_full[1], d3_train_full[0], d3_test[1], d3_test[0])
+# print(nb_accuracy_d3)
 
-MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels)
+
+#MCAP_LR.driver(d1_train_full_matrix, 0, 0, d1_test_matrix, d1_train_full_labels, d1_test_labels, d1_train_70_labels, d1_validation_labels)
+
 # trained_parameters = MCAP_LR.gradient_ascent(d1_train_full_matrix, d1_train_full_labels, .3, 100, .01)
 # print(trained_parameters)
 # parameters = [0.0 for i in range(len(d1_train_full_matrix[0]))]
 # prediction = MCAP_LR.new_make_prediction(d1_train_full_matrix[0], parameters)
 # print(prediction)
+
+#MCAP_LR.driver(d3_train_full_matrix, d3_train_matrix_70, d3_validation_matrix, d3_test_matrix, d3_train_full_labels, d3_test_labels, d3_train_70_labels, d3_validation_labels)
+#run_logistic_regression()
+
