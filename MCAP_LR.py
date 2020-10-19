@@ -88,7 +88,7 @@ def gradient_ascent(training_set, classifications, learn_rate, n_rounds, lambda_
             i += 1
 
         # Print some results of the training round
-        print('>~traing_round=%d, learning_rate=%.3f, error=%.3f' % (round, learn_rate, total_error))
+        print('>~training_round=%d, learning_rate=%.3f, error=%.3f' % (round, learn_rate, total_error))
 
     # Return the parameters array
     return parameters
