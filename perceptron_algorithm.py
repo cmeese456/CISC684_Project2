@@ -3,8 +3,8 @@ from dataset_engineering import make_dataset, get_word_frequency, split_train_se
 """
 Implement the perceptron algorithm (use the perceptron training rule and not the gradient descent rule).
 Notice that unlike logistic regression which is a batch algorithm, the perceptron algorithm is an incremental or stochastic algorithm.
-Treat number of iterations in the perceptron algorithm as a hyper-parameter and use the 70-30 split method described earlier to choose 
-a suitable value for this hyper-parameter. 
+Treat number of iterations in the perceptron algorithm as a hyper-parameter and use the 70-30 split method described earlier to choose
+a suitable value for this hyper-parameter.
 Then, use the chosen value of hyper-parameter, train on the full training dataset and report accuracy on the test set.
 """
 
@@ -174,7 +174,7 @@ def run_perceptron_using_learned_iterations(ham_train_set_path, ham_test_set_pat
 
 # Run the perceptron using the number of iterations we learned by finding convergence on the
 # validation set
-def run_perceptron_using_learned_iterations_on_validation_set(validation_set, n):
+def run_perceptron_using_learned_iterations_on_validation_set(validation_set, n, ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path):
     learning_rate = 0.01  # initialize the learning rate to a small number
     n = int(n)  # convert the number of iterations from a string to an int
 
@@ -207,8 +207,7 @@ def run_perceptron_using_learned_iterations_on_validation_set(validation_set, n)
           str(convergence_iteration), '\n')
 
     print('RUNNING PERCEPTRON ON TEST SET USING THE NUMBER OF ITERATIONS FOR CONVERGENCE THAT THE VALIDATION SET FOUND...\n')
-    run_perceptron_using_learned_iterations('dataset_1/train/ham/', 'dataset_1/test/ham/',
-                                            'dataset_1/train/spam/', 'dataset_1/test/spam/', convergence_iteration)
+    run_perceptron_using_learned_iterations(ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path, convergence_iteration)
 
 
 # run the perceptron and the associated perceptron run functions
@@ -279,8 +278,8 @@ def run_perceptron(ham_train_set_path, ham_test_set_path, spam_train_set_path, s
     get_accuracy(correct_predictions_validation, validation_set)
     print()
 
-    run_perceptron_using_learned_iterations('dataset_1/train/ham/', 'dataset_1/test/ham/',
-                                            'dataset_1/train/spam/', 'dataset_1/test/spam/', convergence_iteration)
+    run_perceptron_using_learned_iterations(ham_train_set_path, ham_test_set_path,
+                                            spam_train_set_path, spam_test_set_path, convergence_iteration)
 
     run_perceptron_using_learned_iterations_on_validation_set(
-        validation_set, convergence_iteration)
+        validation_set, convergence_iteration, ham_train_set_path, ham_test_set_path, spam_train_set_path, spam_test_set_path)
